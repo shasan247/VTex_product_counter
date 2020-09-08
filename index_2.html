@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <!-- <link rel="stylesheet" href="css/style.css"> -->
+  <link rel="stylesheet" href="css/semantic.min.css">
+
+  <title>MQTT Websocket Dashboard</title>
+
+  <script type="text/javascript" src="js/socket.io.min.js"></script>
+  <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+
+  <script type="text/javascript">
+    var socket = io.connect('http://localhost:5000');
+      socket.on('connect', function () {
+        console.log("connected to server");
+        socket.on('mqtt', function (msg) {
+          // var msgTopic=msg.topic.split("/");
+          // var topic=msgTopic[5];
+          // var id=msgTopic[3];
+          console.log(msg.topic+' '+msg.payload);
+          // console.log(topic.concat(id));
+          var obj = JSON.parse(msg.payload);
+          console.log(obj["A"]);
+          $('#A').html(obj["A"]);
+          $('#B').html(obj.B);
+       });
+       socket.emit('subscribe',{topic:'/ESP/#'});
+      });
+  </script>
+
+</head>
+
+<body>
+
+<p><h2 class="ui center dividing aligned header">Viyellatex Conveyor Belt Dashboard</h2></p>
+
+
+<div class="col-sm-12">
+
+
+  <div class="col-sm-3"> 
+</div>
+
+
+<div class="col-sm-3">
+  <div class="" style="text-align:center; margin: auto;">
+    <div class="ui cards">
+      <div class="card">
+        <div class="content">
+          <img class="right floated mini ui image" src="img/tick.png">
+          <div class="header">
+            QC Passed
+          </div>
+          <div class="meta">
+            IR Sensor 11101
+          </div>
+          <div class="description"></div>
+        </div>
+        <div style="text-align:center;" class="extra content centered">
+          <div class="ui labeled button" tabindex="0">
+        <div id="A" class="ui basic blue button">
+          <div class="ui active small inline loader"></div>
+          </div>
+            <button class="ui basic left pointing blue label">Unit(s)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-sm-3">
+  <div class="col span_1_of_5" style="text-align:center; margin: auto;">
+    <div class="ui cards">
+      <div style="text-align:center;" class="card" >
+        <div class="content">
+          <img class="right floated mini ui image" src="img/cross.png">
+          <div class="header">
+            Rejected
+          </div>
+          <div class="meta">
+            IR Sensor 11102
+          </div>
+          <div class="description">
+          </div>
+        </div>
+        <div style="text-align:center;" class="extra content centered">
+          <div class="ui labeled button" tabindex="0">
+        <div id="B" class="ui basic blue button">
+          <div class="ui active small inline loader"></div>
+          </div>
+            <button class="ui basic left pointing blue label">Unit(s)</button>
+          </div>
+        </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="col-sm-3">
+  
+</div>
+
+
+
+
+</div>
+
+
+
+</body>
+</html>

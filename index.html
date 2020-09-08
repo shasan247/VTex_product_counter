@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <title>Hello World</title>
+    
+    <script src="js/socket.io.min.js"></script>
+    <script src="js/jquery-2.1.0.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+    });
+    function LedON(){
+        //socket.emit('publish', {topic:"light",payload:"on"});
+    }
+    function LedOFF(){
+        //socket.emit('publish', {topic:"light",payload:"off"});
+    }
+    var socket = io.connect('http://192.168.2.106:80'); // change the ip address with server IP address
+    socket.on('connect', function () {
+        socket.on('mqttData', function (msg) {
+            console.log(msg.topic+' '+msg.payload);
+            //var jsonData=JSON.parse(msg.payload);
+            //console.log(jsonData['sdata']);
+
+            if(msg.topic=="sonar"){
+                // $("#status_box_1").text("Distance To Object : " + msg.payload+" centimeter");
+                $("h1").text("Object distance = " + msg.payload" cm");
+                $("#time").text("Time = " + jsonData['dtime']);
+            }
+
+            if(msg.payload=="1"){
+                // $("#status_box_1").text("Distance To Object : " + msg.payload+" centimeter");
+                $("h2").text("Vibrating...");
+            }
+
+            else{
+                // $("#status_box_1").text("Distance To Object : " + msg.payload+" centimeter");
+                $("h2").text("");
+            }
+        });
+
+
+        socket.on('user', function (msg) {
+            console.log(msg.topic+' '+msg.payload);
+            //var jsonData=JSON.parse(msg.payload);
+            //console.log(jsonData['sdata']);
+
+            if(msg.topic=="connections"){
+                // $("#status_box_1").text("Distance To Object : " + msg.payload+" centimeter");
+                $("#user").text("Connected User = " + msg.payload);
+                
+            }
+            
+        });
+        //socket.emit('subscribe',{topic:'light'});
+        //socket.emit('subscribe',{topic:'light-status'});
+    });
+</script>
+
+</head>
+
+<body>
+    <div class="app">
+        <h1>Real Time Data</h1>
+        <div id="deviceready" class="blink">
+            <p class="event listening">Connected to server</p>
+            <!-- <p class="event received">Hello World</p> -->
+        </div>
+
+
+
+        <div id="status_box_1" class="blink">
+             <h2></h2>
+        </div>
+
+
+
+        <div id="time">
+            <h1>Time Bar</h1>
+        
+        </div>
+
+
+        <div id="user">
+            <h1>User</h1>        
+        </div>
+
+<!--            <table>
+              <tr>
+                <td id="status_box" style='vertical-align: middle !important;'></td>
+                <td>
+                  <input type='button' value="ON" onclick="LedON()"/><br/>
+                  <input type='button' value="OFF" onclick="LedOFF()"/><br/>
+                </td>
+              </tr>
+            </table> -->
+
+    </div>
+
+
+
+
+
+     
+
+ 
+
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+    </script>
+</body>
+
+</html>
